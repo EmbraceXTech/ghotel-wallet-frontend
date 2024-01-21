@@ -10,7 +10,7 @@ export default function QRCodeGenerator({ value }: QRCodeGeneratorProps) {
       style={{
         height: "auto",
         // margin: "0 auto",
-        maxWidth: 64,
+        maxWidth: 300,
         width: "100%",
       }}
     >

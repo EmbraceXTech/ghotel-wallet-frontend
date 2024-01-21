@@ -7,11 +7,11 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <div className="flex items-center w-full min-h-20 bg-white px-[150px] justify-between border-b">
+    <div className="flex items-center w-full min-h-20 bg-white lg:px-[150px] px-3 justify-between border-b">
       <div className="cursor-pointer" onClick={() => router.replace("/")}>
         <Image
           src="/ghotelLogo.svg"
-          width={109}
+          width={120}
           height={36}
           alt="ghotel trip logo"
         />

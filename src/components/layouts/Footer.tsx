@@ -44,9 +44,10 @@ export default function Footer() {
           setActive(action.value);
           setCurrentPage(action.value);
         }}
+        disabled={action.value === "history"}
       />
     ));
-  }, [active]);
+  }, [active, setCurrentPage]);
   return (
     <div className="flex items-center w-full min-h-20 bg-white px-[150px] justify-center border-b space-x-3">
       {actionButton}

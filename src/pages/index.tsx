@@ -7,22 +7,26 @@ import { QRCodeGenerator, QRCodeScanner } from "@/components/qrcode";
 // import { useSignMessage } from "wagmi";
 import { signMessage } from "@wagmi/core";
 import { useBaseStore } from "@/stores/base.store";
+import HomeView from "@/views/home.view";
+import HistoryView from "@/views/history.view";
+import PayView from "@/views/pay.view";
+import ReceiveView from "@/views/receive.view";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { currentPage } = useBaseStore();
 
-  const body = useCallback(() => {
+  const Body = useCallback(() => {
     switch (currentPage) {
       case "home":
-        return <div>Home</div>;
+        return <HomeView />;
       case "history":
-        return <div>History</div>;
+        return <HistoryView />;
       case "pay":
-        return <div>Pay</div>;
+        return <PayView />;
       case "receive":
-        return <div>Receive</div>;
+        return <ReceiveView />;
       default:
         return <div />;
     }
@@ -39,22 +43,17 @@ export default function Home() {
   // };
   return (
     <main
-      className={`flex flex-col items-center px-24 py-12 ${inter.className}`}
+      className={`flex flex-col items-center w-full py-3 h-full ${inter.className}`}
     >
-      {body()}
+      <div className="lg:w-[500px] w-[380px] h-full">{Body()}</div>
+
       {/* <h1>GHOTEL-WALLET</h1>
       <ConnectKitButton />
       <button onClick={() => toast.success("Here is your toast.")}>
         Tigger Toast
       </button>
       <button onClick={() => sign()}>Sign Message</button>
-      <input
-        className="border"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <QRCodeGenerator value={value} /> */}
-      {/* <div className="w-1/2"><QRCodeScanner /></div> */}
+       */}
     </main>
   );
 }

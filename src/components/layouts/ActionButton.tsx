@@ -6,6 +6,7 @@ interface ActionButtonProps {
   icon: React.ReactNode;
   label: string;
   onPress: () => void;
+  disabled?: boolean;
 }
 
 export default function ActionButton({
@@ -13,6 +14,7 @@ export default function ActionButton({
   icon,
   label,
   onPress,
+  disabled = false,
 }: ActionButtonProps) {
   return (
     <Button
@@ -22,6 +24,7 @@ export default function ActionButton({
       )}
       variant="light"
       onPress={onPress}
+      isDisabled={disabled}
     >
       {icon}
       <div className="text-xs text-secondary font-semibold">{label}</div>
