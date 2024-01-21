@@ -2,7 +2,7 @@ import { IconActiveType } from "@/types/icon.type";
 
 export default function ScanIcon({
   active = false,
-  activeColor = "#B497EE",
+  activeColor = "#6CE89E",
   idleColor = "#0F1419",
 }: IconActiveType) {
   return (

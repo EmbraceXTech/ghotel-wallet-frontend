@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: "#B497EE",
+        brand: "#6CE89E",
         "brand-sec": "#44297E",
         tertiary: "#A3A3A3",
         secondary: "#5B616E",
@@ -33,7 +33,7 @@ const config: Config = {
         light: {
           colors: {
             primary: {
-              DEFAULT: "#B497EE",
+              DEFAULT: "#6CE89E",
             },
           },
         },
