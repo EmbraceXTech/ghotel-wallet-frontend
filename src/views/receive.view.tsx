@@ -1,10 +1,35 @@
 import DownloadIcon from "@/components/icons/Download";
 import { QRCodeGenerator } from "@/components/qrcode";
+import { getMerchantSignature } from "@/services/ghotelWallet.service";
 import { Button, Input } from "@nextui-org/react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 
 export default function ReceiveView() {
   const [value, setValue] = useState("");
+
+  const { address } = useAccount();
+
+  const { data } = useQuery({
+    queryKey: ["signature", address],
+    queryFn: ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      return getMerchantSignature(queryKey[1]);
+    },
+    refetchInterval: 5000,
+  });
+
+  const handleGenerateValue = useCallback(() => {
+    if (!address || !value) return "";
+    return `${address}-${value}`;
+  }, [address, value]);
+
+  useEffect(() => {
+    if (!data) return;
+    console.log(data);
+    // execute the QR code generator
+  }, [data]);
   return (
     <div className="w-full bg-white px-8 py-6 rounded-xl border-[#E9EBED] font-medium text-sm">
       <div className="text-center mb-4">Receive</div>
@@ -22,7 +47,7 @@ export default function ReceiveView() {
             Scan the QR code to receive
           </div>
         </div>
-        <QRCodeGenerator value={value} />
+        <QRCodeGenerator value={handleGenerateValue()} />
       </div>
 
       <Button

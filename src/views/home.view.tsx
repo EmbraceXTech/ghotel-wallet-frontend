@@ -19,8 +19,6 @@ export default function HomeView() {
     setIsClient(true);
   }, []);
 
-  console.log(balances);
-
   if (isClient)
     return (
       <div className="w-full space-y-2">
