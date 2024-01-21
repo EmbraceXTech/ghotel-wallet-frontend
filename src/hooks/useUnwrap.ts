@@ -10,7 +10,7 @@ export const useUnwrap = () => {
   // Solution: fix constant id, subgraph, or get from government db
   const { isLoading, writeAsync, isError } = useContractWrite({
     ...PBMContract(chainId),
-    method: "unwrap",
+    functionName: "unwrap",
     // args: [address, address, 0, 0, ""],
   });
 

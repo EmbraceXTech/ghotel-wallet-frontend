@@ -16,7 +16,7 @@ export const usePay = () => {
   const pay = useCallback(
     async (to: `0x${string}`, id: string, amount: string, data: `0x${string}`) => {
       if (!address) return;
-      return await writeAsync({ args: [address, to, parseEther(id), parseEther(amount), data] });
+      return await writeAsync({ args: [address, to, BigInt(id), parseEther(amount), data] });
     },
     [address, writeAsync]
   );
