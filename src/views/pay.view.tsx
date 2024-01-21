@@ -1,14 +1,20 @@
+import PayModal from "@/components/modal/payModal";
 import { QRCodeScanner } from "@/components/qrcode";
 import { usePay } from "@/hooks/usePay";
-import { sendSignature } from "@/services/ghotelWallet.service";
+import { payWithVoucher } from "@/services/encoder.service";
+import { useDisclosure } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { parseEther } from "viem";
+import { useAccount, useChainId, useSignMessage } from "wagmi";
 
 export default function PayView() {
   const [isProcess, setIsProcess] = useState(false);
   const { signMessage, data, status } = useSignMessage();
   const [tempMerchantAddress, setMerchantAddress] = useState("");
   const { address } = useAccount();
+  const chainId = useChainId();
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const [transaction, setTransaction] = useState("");
 
   const { pay } = usePay();
 
@@ -18,30 +24,52 @@ export default function PayView() {
     setIsProcess(true);
     const [merchantAddress, price] = result.split("-");
     setMerchantAddress(merchantAddress);
-    const token = +price * 0.6;
-    const voucher = +price * 0.4;
+    const token = +price * 0.7;
+    const voucher = +price * 0.3;
 
     console.log(token, voucher);
 
     // TODO: sign signature
-    handleSign(merchantAddress as `0x${string}`, token.toString());
+    handleSign(
+      merchantAddress as `0x${string}`,
+      token.toString(),
+      voucher.toString()
+    );
 
     // TODO: send to server
   };
 
   const handleSign = async (
     merchantAddress: `0x${string}`,
-    tokenPrice: string
+    tokenPrice: string,
+    voucherPrice: string
   ) => {
+    if (!address) return;
     try {
-      const res = await pay(merchantAddress, "2", tokenPrice, "0x");
+      const data = await payWithVoucher(
+        chainId,
+        address,
+        merchantAddress,
+        merchantAddress,
+        parseEther(tokenPrice),
+        parseEther("0")
+      );
+      const res = await pay(merchantAddress, "2", voucherPrice, data || "0x");
       console.log(res);
+      setTransaction(res!.hash);
+      onOpen();
       setIsProcess(false);
     } catch (error) {
       console.error(error);
       setIsProcess(false);
     }
   };
+
+  useEffect(() => {
+    if(isOpen === false) {
+      setIsProcess(false);
+    }
+  }, [isOpen]);
 
   // useEffect(() => {
   //   if (status === "success" && data && address) {
@@ -60,6 +88,7 @@ export default function PayView() {
         handleQRCodeScanner={handleQRCodeScanner}
         isProcess={isProcess}
       />
+      <PayModal isOpen={isOpen} onOpenChange={onOpenChange} hash={transaction} />
     </div>
   );
 }
