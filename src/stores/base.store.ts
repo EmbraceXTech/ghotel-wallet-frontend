@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-type Store = {
-  count: number;
-  inc: () => void;
+type BaseStore = {
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
 };
 
-export const useStore = create<Store>()((set) => ({
-  count: 1,
-  inc: () => set((state) => ({ count: state.count + 1 })),
+export const useBaseStore = create<BaseStore>()((set) => ({
+  currentPage: 'home',
+  setCurrentPage: (page) => set({ currentPage: page }),
 }));
