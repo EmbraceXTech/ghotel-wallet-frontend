@@ -1,16 +1,50 @@
-import { useAccount, useChainId, useContractReads } from "wagmi";
+import {
+  useAccount,
+  useChainId,
+  useContractRead,
+  useContractReads,
+} from "wagmi";
 
-import Contract from "@/configs/contract.config";
+import { PBMManagerContract, PBMContract } from "@/configs/contract.config";
+import { useMemo } from "react";
+import { formatEther } from "viem";
+
+const voucherId = [0, 1, 2];
 
 export const useFetchVoucer = () => {
   const { address } = useAccount();
   const chainId = useChainId();
-  // TODO: https://wagmi.sh/react/api/hooks/useReadContracts
-  // Fetch:
-  // 1. get PBM detail (PBMManager) -> getTokenDetails(uint256 _tokenId)
-  // 2. get PBM Amount in each address (PBM) -> balanceOfBatch(address[] accounts, uint256[] ids) or balanceOf(address account, uint256 id)
-  // NOTE: how to get id ???
-  // Solution: fix constant id, subgraph, or get from government db
-  const { isLoading, data, isError } = useContractReads({ contracts: [] });
+  const pbmManagerDetail = voucherId.map((id) => ({
+    ...PBMManagerContract(chainId),
+    functionName: "getTokenDetails",
+    args: [id],
+  }));
+  const pbmBalanceBatch = voucherId.map((id) => ({
+    ...PBMContract(chainId),
+    functionName: "balanceOf",
+    args: [address ?? "0x", id],
+  }));
+  const {
+    isLoading,
+    data: data1,
+    isError,
+  } = useContractReads({
+    contracts: pbmManagerDetail,
+  });
+  const { data: data2 } = useContractReads({
+    contracts: pbmBalanceBatch,
+  });
+
+  const data = useMemo(() => {
+    if (!data1 || !data2 || data1.length !== data2.length) return;
+    return data1.map((item, key) => {
+      return {
+        ...(item.result as any),
+        balance: formatEther(data2[key].result as bigint),
+        voucherId: voucherId[key],
+      };
+    });
+  }, [data1, data2]);
+
   return { data, isLoading, isError };
 };

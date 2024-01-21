@@ -9,11 +9,13 @@ import toast from "react-hot-toast";
 import WalletIcon from "@/components/icons/Wallet";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { TOKEN_DISPLAY } from "@/constants/tokenDisplay.constant";
+import { useFetchVoucer } from "@/hooks/useFetchVoucher";
 
 export default function HomeView() {
   const { address } = useAccount();
   const [isClient, setIsClient] = useState(false);
   const { balances, totalBalance } = useTokenBalance();
+  const { data } = useFetchVoucer();
 
   useEffect(() => {
     setIsClient(true);
@@ -21,10 +23,10 @@ export default function HomeView() {
 
   if (isClient)
     return (
-      <div className="w-full space-y-2">
-        <div className="w-full bg-primary rounded-2xl py-4 px-4">
+      <div className="w-full space-y-1">
+        <div className="w-full bg-primary rounded-2xl p-2">
           <div className="bg-white rounded-2xl w-full">
-            <div className="p-4 space-y-1">
+            <div className="p-2 space-y-1">
               <div className="text-tertiary text-sm font-normal">
                 Wallet Address
               </div>
@@ -76,7 +78,9 @@ export default function HomeView() {
               3
             </Chip>
           </div>
-          <VoucherDisplay />
+          <div className="flex space-x-3">
+            {data && data.map((voucher, key) => <VoucherDisplay key={key} balance={voucher.balance} uri={voucher.uri} voucherId={voucher.voucherId} />)}
+          </div>
         </div>
       </div>
     );
